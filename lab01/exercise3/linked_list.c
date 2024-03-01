@@ -2,86 +2,68 @@
 #include <stdlib.h>
 #include "linked_list.h"
 
-/* returns a new node whose data is set to DATA and next is set to NULL */
 Node *create_node(int data) {
-    /* Don't worry about malloc yet! It is not in the scope of this lab */
-    struct Node *new_node = malloc(sizeof(struct Node));
+    struct Node *new_node = malloc(sizeof(struct Node));  // Allocate memory for a new node
     if (new_node == NULL) {
-        perror("Malloc failed\n");
+        perror("Malloc failed\n");  // Print an error message if memory allocation fails
     }
-    new_node->data = data;
-    new_node->next = NULL;
-    return new_node;
+    new_node->data = data;  // Set the data of the new node
+    new_node->next = NULL;  // Initialize the next pointer of the new node to NULL
+    return new_node;  
 }
 
-/* Don't worry about free(), it is not in the scope of this lab */
-/* Frees the list starting at HEAD */
 void free_list(Node *head) {
-    while (head != NULL) {
-        Node *temp = head->next;
-        free(head);
-        head = temp;
+    while (head != NULL) {  // Loop through the list
+        Node *temp = head->next;  // Save the next node
+        free(head);  // Free the current node
+        head = temp;  // Move to the next node
     }
 }
 
-/* Creates a new node whose data is set to DATA and adds it to the front of the
-   list pointed to by HEAD.
-   This function is heavily commented for instructional purposes. Please
-   never use this many comments when you are writing code. */
 void add_to_front(struct Node **head, int data) {
-    /* Check if the head is NULL to make sure that we do not dereference a NULL pointer
-    because that would result in a segfault */
-    if (head == NULL) return;
-    struct Node *new_node = create_node(data);
+    if (head == NULL) return;  // If the head is NULL, return
+    struct Node *new_node = create_node(data);  // Create a new node with the given data
     if (*head != NULL) {
-        /* The list is not empty */
-        /* The new node's next should point to the head */
-        new_node->next = *head;
+        new_node->next = *head;  // If the list is not empty, set the next pointer of the new node to the old head
     }
-    /* We must set HEAD using the following line in order to change the original list */
-    *head = new_node;
-    /* The following line would not work because it would only change our local copy of HEAD */
-    /* head = new_node */
+    *head = new_node;  // Update the head pointer to the new node
 }
 
-/* Prints out a linked list starting at HEAD */
 void print_list(struct Node *head) {
     struct Node *curr;
-    for (curr = head; curr != NULL; curr = curr->next) {
-        printf("%d->", curr->data);
+    for (curr = head; curr != NULL; curr = curr->next) {  // Loop through the list
+        printf("%d->", curr->data);  // Print the data of the current node
     }
-    printf("NULL\n");
+    printf("NULL\n");  // Print NULL to indicate the end of the list
 }
 
-/* Iteratively reverses a linked list whose first node is HEAD */
 void reverse_list(struct Node **head) {
-    if (*head == NULL || head == NULL) {
+    if (*head == NULL || head == NULL) {  // If the head is NULL or the list is empty, return
         return;
     }
-    struct Node *curr = *head;
-    struct Node *next = (*head)->next;
-    curr->next = NULL;
-    while (next != NULL) {
-        struct Node *temp = next->next;
-        next->next = curr;
-        curr = next;
+    struct Node *curr = *head;  // Initialize the current node to the head
+    struct Node *next = (*head)->next;  // Initialize the next node to the second node in the list
+    curr->next = NULL;  // Set the next pointer of the head to NULL
+    while (next != NULL) {  // Loop through the list
+        struct Node *temp = next->next;  // Save the next node
+        next->next = curr;  // Reverse the pointer of the next node to the current node
+        curr = next;  // Move to the next node
         next = temp;
     }
-    *head = curr;
+    *head = curr;  // Update the head pointer to the new head
 }
 
-/* Creates a new node with a data field set to DATA and adds the node
-   to the back of the list pointed to by HEAD */
 void add_to_back(Node **head, int data) {
-    Node *new_node = create_node(data);
+    Node *new_node = create_node(data);  // Create a new node with the given data
     if (*head == NULL) {
-    	*head=new_node; 
+    	*head=new_node;  // If the list is empty, set the head to the new node
         return;
     }
     
     Node *prev;
-    for (Node *curr = *head; curr != NULL; curr = curr->next) {
+    for (Node *curr = *head; curr != NULL; curr = curr->next) {  // Find the last node in the list
         prev = curr;
     }
-    prev->next = new_node;
+    prev->next = new_node;  // Add the new node to the back of the list
 }
+
