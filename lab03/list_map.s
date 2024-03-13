@@ -1,9 +1,9 @@
-.globl map
+.globl map #Hello HiHiHiHiHi there to test sync
 
 .text
 main:
     jal ra, create_default_list
-    add s0, a0, x0 # a0 (and now s0) is the head of node list
+    add s0, a0, x0 # a0 (and now s0) is the head of node list     
 
     # Print the list
     add a0, s0, x0
@@ -17,7 +17,8 @@ main:
 
     # Load the address of the "square" function into a1 (hint: check out "la" on the green sheet)
     ### YOUR CODE HERE ###
-
+    la a1,square
+    
 
     # Issue the call to map
     jal ra, map
@@ -36,7 +37,7 @@ main:
     
     # Load the address of the "decrement" function into a1 (should be very similar to before)
     ### YOUR CODE HERE ###
-
+    la a1,decrement
 
     # Issue the call to map
     jal ra, map
@@ -52,6 +53,10 @@ main:
 map:
     # Prologue: Make space on the stack and back-up registers
     ### YOUR CODE HERE ###
+    addi sp, sp -12
+    sw s0,0(sp)
+    sw s1,4(sp)
+    sw ra,8(sp)
 
     beq a0, x0, done # If we were given a null pointer (address 0), we're done.
 
@@ -63,32 +68,44 @@ map:
 
     # Load the value of the current node into a0
     # THINK: Why a0?
+    # Answer: Because we have to pass again this to s0 for adding 
     ### YOUR CODE HERE ###
+    lw a0, 0(s0)
+    
 
     # Call the function in question on that value. DO NOT use a label (be prepared to answer why).
     # Hint: Where do we keep track of the function to call? Recall the parameters of "map".
     ### YOUR CODE HERE ###
+    jalr s1
 
     # Store the returned value back into the node
     # Where can you assume the returned value is?
     ### YOUR CODE HERE ###
-
+    sw a0,0(s0)
+    
     # Load the address of the next node into a0
     # The address of the next node is an attribute of the current node.
     # Think about how structs are organized in memory.
     ### YOUR CODE HERE ###
-
+    lw a0, 4(s0)
+    
     # Put the address of the function back into a1 to prepare for the recursion
     # THINK: why a1? What about a0?
+    # Answer: Because a1 is for storing function and a0 for storing variable
     ### YOUR CODE HERE ###
-
+    mv a1, s1
     # Recurse
     ### YOUR CODE HERE ###
+    
+    jal ra, map
 
 done:
     # Epilogue: Restore register values and free space from the stack
     ### YOUR CODE HERE ###
-
+    lw s0, 0(sp)  #4
+    lw s1, 4(sp)  #5
+    lw ra, 8(sp)  
+    addi sp, sp, 12 #6
     jr ra # Return to caller
 
 # === Definition of the "square" function ===
